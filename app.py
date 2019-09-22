@@ -1,4 +1,26 @@
-from iexfinance.stocks import Stock
+import requests
+from bs4 import BeautifulSoup
 
-a = Stock("TSLA", token="sk_f5ff8d3e0e234960a182e0017fb0a220")
-print(a.get_price())
+ticker = input("Enter Ticker: ")
+response = requests.get('https://www.marketwatch.com/investing/stock/' + ticker)
+soup = BeautifulSoup(response.text, 'html.parser')
+
+
+def getPrice():
+    pr = soup.find('bg-quote', class_="value")
+    price = pr.get_text()
+    return price
+
+
+def getKeyData():
+    keyData = []
+    kd = soup.findAll('span', class_='kv__value kv__primary')
+    for index in kd:
+        keyData.append(index.get_text())
+
+    return keyData
+
+
+print(ticker)
+print(getPrice())
+print(getKeyData())
